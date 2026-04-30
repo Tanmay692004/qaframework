@@ -43,6 +43,7 @@ class DriverFactory:
     def _create_chrome_driver(headless: bool = False):
         """Create Chrome WebDriver with options"""
         options = webdriver.ChromeOptions()
+        options.page_load_strategy = "eager"  # Performance tuning: don't wait for all resources
 
         # Add desired options
         options.add_argument("--no-sandbox")
@@ -64,6 +65,7 @@ class DriverFactory:
     def _create_firefox_driver(headless: bool = False):
         """Create Firefox WebDriver with options"""
         options = webdriver.FirefoxOptions()
+        options.page_load_strategy = "eager"  # Performance tuning: don't wait for all resources
 
         options.add_argument("--width=1920")
         options.add_argument("--height=1080")

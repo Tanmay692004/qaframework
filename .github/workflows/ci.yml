@@ -47,7 +47,7 @@ jobs:
         env:
           BROWSER: ${{ matrix.browser }}
         run: |
-          pytest -q --browser=${{ matrix.browser }} --html=reports/report-${{ matrix.browser }}.html --self-contained-html --junitxml=reports/junit-${{ matrix.browser }}.xml
+          pytest -n auto -q --browser=${{ matrix.browser }} --html=reports/report-${{ matrix.browser }}.html --self-contained-html --junitxml=reports/junit-${{ matrix.browser }}.xml
 
       - name: Upload reports and screenshots
         uses: actions/upload-artifact@v4
