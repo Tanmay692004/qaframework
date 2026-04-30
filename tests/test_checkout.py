@@ -56,13 +56,23 @@ class TestCheckout:
         checkout.enter_customer_info("", "Doe", "12345")
         checkout.continue_checkout()
 
-        # Expect an error element on page - reuse LoginPage error selector as pattern
-        from pages.login_page import LoginPage as LP
-        err = ""
-        try:
-            # The site shows an error banner with data-test='error'
-            err = driver.find_element(*LP.ERROR_MESSAGE).text
-        except Exception:
-            err = ""
+        assert checkout.get_error_message(), "Should display error when required fields are missing"
 
-        assert err, "Should display error when required fields are missing"
+    @pytest.mark.parametrize(
+        "first_name,last_name,postal_code,expected_error",
+        [
+            ("", "Doe", "12345", "first name"),
+            ("John", "", "12345", "last name"),
+            ("John", "Doe", "", "postal code"),
+        ],
+    )
+    def test_checkout_validation_messages(self, driver, first_name, last_name, postal_code, expected_error):
+        self.login_and_add_item(driver)
+        checkout = CheckoutPage(driver)
+        checkout.start_checkout()
+        checkout.enter_customer_info(first_name, last_name, postal_code)
+        checkout.continue_checkout()
+
+        error_message = checkout.get_error_message()
+        assert error_message, "Checkout validation error should be shown"
+        assert expected_error in error_message.lower()

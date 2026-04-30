@@ -53,6 +53,14 @@ def driver(browser, request):
     driver.quit()
 
 
+@pytest.fixture(autouse=True)
+def log_test_lifecycle(request):
+    """Log test start/end for easier report triage."""
+    logger.info("TEST START: %s", request.node.nodeid)
+    yield
+    logger.info("TEST END: %s", request.node.nodeid)
+
+
 def pytest_addoption(parser):
     """Add custom command line options for pytest"""
     parser.addoption(

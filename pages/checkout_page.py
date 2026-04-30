@@ -2,13 +2,12 @@
 Checkout Page - POM for checkout flow (information and finish)
 """
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from utils.config import DEFAULT_WAIT_SECONDS
+from pages.base_page import BasePage
 
 
-class CheckoutPage:
+class CheckoutPage(BasePage):
     """Page Object Model for SauceDemo checkout pages"""
 
     # From cart page to checkout start
@@ -26,36 +25,34 @@ class CheckoutPage:
     # Completion
     COMPLETE_HEADER = (By.CLASS_NAME, "complete-header")
     COMPLETE_TEXT = (By.CLASS_NAME, "complete-text")
+    ERROR_MESSAGE = (By.CSS_SELECTOR, "[data-test='error']")
 
     def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
+        super().__init__(driver)
 
     def start_checkout(self):
-        btn = self.wait.until(EC.element_to_be_clickable(self.CHECKOUT_BUTTON))
-        btn.click()
+        self.click(self.CHECKOUT_BUTTON)
 
     def enter_customer_info(self, first_name: str, last_name: str, postal_code: str):
-        fn = self.wait.until(EC.presence_of_element_located(self.FIRST_NAME))
-        ln = self.driver.find_element(*self.LAST_NAME)
-        pc = self.driver.find_element(*self.POSTAL_CODE)
-
-        fn.clear(); fn.send_keys(first_name)
-        ln.clear(); ln.send_keys(last_name)
-        pc.clear(); pc.send_keys(postal_code)
+        self.type_text(self.FIRST_NAME, first_name)
+        self.type_text(self.LAST_NAME, last_name)
+        self.type_text(self.POSTAL_CODE, postal_code)
 
     def continue_checkout(self):
-        btn = self.wait.until(EC.element_to_be_clickable(self.CONTINUE_BUTTON))
-        btn.click()
+        self.click(self.CONTINUE_BUTTON)
 
     def finish_checkout(self):
-        btn = self.wait.until(EC.element_to_be_clickable(self.FINISH_BUTTON))
-        btn.click()
+        self.click(self.FINISH_BUTTON)
 
     def get_complete_header(self) -> str:
-        el = self.wait.until(EC.presence_of_element_located(self.COMPLETE_HEADER))
-        return el.text.strip()
+        return self.get_text(self.COMPLETE_HEADER)
 
     def get_complete_text(self) -> str:
-        el = self.wait.until(EC.presence_of_element_located(self.COMPLETE_TEXT))
-        return el.text.strip()
+        return self.get_text(self.COMPLETE_TEXT)
+
+    def get_error_message(self) -> str:
+        """Return checkout validation error text."""
+        try:
+            return self.get_text(self.ERROR_MESSAGE)
+        except Exception:
+            return ""

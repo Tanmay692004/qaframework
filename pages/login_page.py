@@ -4,13 +4,13 @@ Handles all interactions with the SauceDemo login page
 """
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from utils.config import BASE_URL, DEFAULT_WAIT_SECONDS
+from pages.base_page import BasePage
+from utils.config import BASE_URL
 
 
-class LoginPage:
+class LoginPage(BasePage):
     """Page Object Model for SauceDemo Login Page"""
 
     # Locators
@@ -30,12 +30,11 @@ class LoginPage:
         Args:
             driver: Selenium WebDriver instance
         """
-        self.driver = driver
-        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
+        super().__init__(driver)
 
     def load(self):
         """Navigate to the login page"""
-        self.driver.get(self.BASE_URL)
+        self.open(self.BASE_URL)
         return self
 
     def enter_username(self, username: str):
@@ -45,11 +44,7 @@ class LoginPage:
         Args:
             username (str): Username to enter
         """
-        username_field = self.wait.until(
-            EC.presence_of_element_located(self.USERNAME_INPUT)
-        )
-        username_field.clear()
-        username_field.send_keys(username)
+        self.type_text(self.USERNAME_INPUT, username)
 
     def enter_password(self, password: str):
         """
@@ -58,18 +53,11 @@ class LoginPage:
         Args:
             password (str): Password to enter
         """
-        password_field = self.wait.until(
-            EC.presence_of_element_located(self.PASSWORD_INPUT)
-        )
-        password_field.clear()
-        password_field.send_keys(password)
+        self.type_text(self.PASSWORD_INPUT, password)
 
     def click_login_button(self):
         """Click the Login button"""
-        login_button = self.wait.until(
-            EC.element_to_be_clickable(self.LOGIN_BUTTON)
-        )
-        login_button.click()
+        self.click(self.LOGIN_BUTTON)
 
     def login(self, username: str, password: str):
         """
@@ -91,11 +79,8 @@ class LoginPage:
             str: Error message text, or empty string if no error
         """
         try:
-            error_element = self.wait.until(
-                EC.presence_of_element_located(self.ERROR_MESSAGE)
-            )
-            return error_element.text
-        except:
+            return self.get_text(self.ERROR_MESSAGE)
+        except Exception:
             return ""
 
     def is_login_successful(self) -> bool:
@@ -108,5 +93,5 @@ class LoginPage:
         try:
             self.wait.until(EC.presence_of_element_located(self.INVENTORY_PAGE_TITLE))
             return True
-        except:
+        except Exception:
             return False

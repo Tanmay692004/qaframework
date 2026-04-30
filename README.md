@@ -14,14 +14,17 @@ A production-quality **Python Selenium Pytest Framework** for test automation, b
 ## 📋 Features
 
 - ✅ **Page Object Model** - Clean, maintainable, scalable test structure
+- ✅ **Base Page Abstraction** - Shared Selenium helpers for reusable page logic
 - ✅ **Cross-Browser Support** - Chrome and Firefox
 - ✅ **Selenium Manager Driver Resolution** - No manual driver downloads or GitHub API dependency
 - ✅ **Screenshot on Failure** - Automatic captures for debugging
+- ✅ **Screenshot Attachment in HTML Reports** - Failure evidence embedded in pytest-html output
 - ✅ **HTML Test Reports** - pytest-html integration
 - ✅ **Data-Driven Testing** - Parameterized tests with CSV/JSON
 - ✅ **Parallel Execution** - pytest-xdist support
 - ✅ **Robust Logging** - Custom logger for test execution
 - ✅ **Modular Architecture** - Separation of concerns (tests, pages, utils)
+- ✅ **22 Meaningful Tests** - Login, product/cart, and checkout coverage
 
 ---
 
@@ -72,11 +75,14 @@ qaframework/
 │   └── test_login.py         # Login test cases
 ├── pages/                     # Page Object Model classes
 │   ├── __init__.py
+│   ├── base_page.py          # Shared page helpers
 │   └── login_page.py         # Login page POM
 ├── utils/                     # Utility functions
 │   ├── __init__.py
+│   ├── config.py             # Central framework settings
 │   ├── driver_factory.py      # WebDriver creation
 │   └── logger.py              # Custom logging
+├── test_data/                 # JSON/CSV data files
 ├── screenshots/               # Failure screenshots (generated)
 ├── reports/                   # HTML reports (generated)
 ├── conftest.py               # Pytest fixtures and hooks
@@ -130,6 +136,12 @@ pytest --browser=chrome
 pytest --html=reports/report.html --self-contained-html
 ```
 
+### Run Full Suite in Parallel with HTML Report
+
+```bash
+pytest tests/test_login.py tests/test_products.py tests/test_checkout.py -n auto --browser=firefox --html=reports/report.html --self-contained-html
+```
+
 ### Run Tests in Parallel
 
 ```bash
@@ -173,6 +185,10 @@ pytest -m smoke
 5. **Test Cases**
    - ✅ `test_valid_login` - Valid credentials login
    - ✅ `test_negative_login_scenarios` - JSON-driven invalid, locked, and empty credential cases
+   - ✅ Product/cart tests for add, remove, sort, and cart validation
+   - ✅ Checkout tests for happy path and validation errors
+
+   **Current test count:** 22 meaningful automated test cases
 
 6. **Configuration**
    - `pytest.ini` - Pytest settings, markers, and addopts

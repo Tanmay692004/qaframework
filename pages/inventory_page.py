@@ -3,14 +3,13 @@ Inventory Page - Page Object Model for product listing and actions
 Handles product listing, sorting, add/remove actions, and navigation to cart
 """
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 
-from utils.config import DEFAULT_WAIT_SECONDS
+from pages.base_page import BasePage
 
 
-class InventoryPage:
+class InventoryPage(BasePage):
     """Page Object Model for SauceDemo Inventory Page"""
 
     PRODUCT_CONTAINER = (By.CLASS_NAME, "inventory_item")
@@ -21,8 +20,7 @@ class InventoryPage:
     SHOPPING_CART_LINK = (By.CLASS_NAME, "shopping_cart_link")
 
     def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
+        super().__init__(driver)
 
     def get_all_products(self):
         """Return list of product dicts: {name, price, element}"""
@@ -71,8 +69,7 @@ class InventoryPage:
 
     def open_cart(self):
         """Navigate to cart page"""
-        cart_link = self.wait.until(EC.element_to_be_clickable(self.SHOPPING_CART_LINK))
-        cart_link.click()
+        self.click(self.SHOPPING_CART_LINK)
 
     def get_cart_badge_count(self) -> int:
         """Return the integer count shown on the cart badge, or 0 if absent"""
