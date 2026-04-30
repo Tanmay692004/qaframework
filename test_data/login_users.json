@@ -1,0 +1,72 @@
+[
+  {
+    "case_id": "valid_standard_user",
+    "username": "standard_user",
+    "password": "secret_sauce",
+    "expected": "success",
+    "notes": "happy-path standard user"
+  },
+  {
+    "case_id": "valid_performance_user",
+    "username": "performance_glitch_user",
+    "password": "secret_sauce",
+    "expected": "success",
+    "notes": "another valid account used in smoke tests"
+  },
+  {
+    "case_id": "invalid_password",
+    "username": "standard_user",
+    "password": "wrong_password",
+    "expected": "failure",
+    "expected_error_contains": "do not match",
+    "notes": "wrong password"
+  },
+  {
+    "case_id": "locked_user",
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "expected": "failure",
+    "expected_error_contains": "locked out",
+    "notes": "user locked by app"
+  },
+  {
+    "case_id": "empty_username",
+    "username": "",
+    "password": "secret_sauce",
+    "expected": "failure",
+    "expected_error_contains": "username is required",
+    "notes": "missing username"
+  },
+  {
+    "case_id": "empty_password",
+    "username": "standard_user",
+    "password": "",
+    "expected": "failure",
+    "expected_error_contains": "password is required",
+    "notes": "missing password"
+  },
+  {
+    "case_id": "empty_credentials",
+    "username": "",
+    "password": "",
+    "expected": "failure",
+    "expected_error_contains": "username is required",
+    "notes": "both fields empty"
+  },
+  {
+    "case_id": "edge_long_username",
+    "username": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+    "password": "pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "expected": "failure",
+    "expected_error_contains": "do not match",
+    "notes": "extremely long inputs"
+  },
+  {
+    "case_id": "edge_sql_injection",
+    "username": "' OR '1'='1",
+    "password": "' OR '1'='1",
+    "expected": "failure",
+    "expected_error_contains": "do not match",
+    "notes": "injection-like input"
+  }
+]
