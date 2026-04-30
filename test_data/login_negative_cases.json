@@ -1,0 +1,32 @@
+[
+  {
+    "case_id": "invalid_password",
+    "username": "standard_user",
+    "password": "wrong_password",
+    "expected_error_contains": "do not match"
+  },
+  {
+    "case_id": "locked_user",
+    "username": "locked_out_user",
+    "password": "secret_sauce",
+    "expected_error_contains": "locked out"
+  },
+  {
+    "case_id": "empty_username",
+    "username": "",
+    "password": "secret_sauce",
+    "expected_error_contains": "username is required"
+  },
+  {
+    "case_id": "empty_password",
+    "username": "standard_user",
+    "password": "",
+    "expected_error_contains": "password is required"
+  },
+  {
+    "case_id": "empty_credentials",
+    "username": "",
+    "password": "",
+    "expected_error_contains": "username is required"
+  }
+]

@@ -171,11 +171,7 @@ pytest -m smoke
 
 5. **Test Cases**
    - ✅ `test_valid_login` - Valid credentials login
-   - ✅ `test_invalid_login` - Wrong password
-   - ✅ `test_locked_user_login` - Locked account
-   - ✅ `test_empty_username` - Empty username validation
-   - ✅ `test_empty_password` - Empty password validation
-   - ✅ `test_empty_credentials` - Both fields empty
+   - ✅ `test_negative_login_scenarios` - JSON-driven invalid, locked, and empty credential cases
 
 6. **Configuration**
    - `pytest.ini` - Pytest settings, markers, and addopts
