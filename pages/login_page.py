@@ -7,6 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from utils.config import BASE_URL, DEFAULT_WAIT_SECONDS
+
 
 class LoginPage:
     """Page Object Model for SauceDemo Login Page"""
@@ -19,7 +21,7 @@ class LoginPage:
     INVENTORY_PAGE_TITLE = (By.CLASS_NAME, "app_logo")
 
     # Base URL
-    BASE_URL = "https://www.saucedemo.com"
+    BASE_URL = BASE_URL
 
     def __init__(self, driver):
         """
@@ -29,7 +31,7 @@ class LoginPage:
             driver: Selenium WebDriver instance
         """
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
 
     def load(self):
         """Navigate to the login page"""

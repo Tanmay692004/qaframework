@@ -15,6 +15,7 @@ A production-quality **Python Selenium Pytest Framework** for test automation, b
 
 - ✅ **Page Object Model** - Clean, maintainable, scalable test structure
 - ✅ **Cross-Browser Support** - Chrome and Firefox
+- ✅ **Selenium Manager Driver Resolution** - No manual driver downloads or GitHub API dependency
 - ✅ **Screenshot on Failure** - Automatic captures for debugging
 - ✅ **HTML Test Reports** - pytest-html integration
 - ✅ **Data-Driven Testing** - Parameterized tests with CSV/JSON

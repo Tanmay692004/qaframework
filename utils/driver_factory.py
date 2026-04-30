@@ -4,10 +4,8 @@ Supports Chrome and Firefox browsers with options for headless mode
 """
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.firefox.service import Service as FirefoxService
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
+
+from utils.config import DEFAULT_WINDOW_SIZE
 
 
 class DriverFactory:
@@ -49,16 +47,13 @@ class DriverFactory:
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
-        options.add_argument("--window-size=1920,1080")
+        options.add_argument(f"--window-size={DEFAULT_WINDOW_SIZE}")
 
         if headless:
             options.add_argument("--headless")
 
-        # Create driver with auto-download via webdriver-manager
-        driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
-            options=options,
-        )
+        # Selenium Manager resolves the driver binary automatically.
+        driver = webdriver.Chrome(options=options)
         return driver
 
     @staticmethod
@@ -67,15 +62,13 @@ class DriverFactory:
         options = webdriver.FirefoxOptions()
         options.page_load_strategy = "eager"  # Performance tuning: don't wait for all resources
 
-        options.add_argument("--width=1920")
-        options.add_argument("--height=1080")
+        width, height = DEFAULT_WINDOW_SIZE.split(",")
+        options.add_argument(f"--width={width}")
+        options.add_argument(f"--height={height}")
 
         if headless:
             options.add_argument("--headless")
 
-        # Create driver with auto-download via webdriver-manager
-        driver = webdriver.Firefox(
-            service=FirefoxService(GeckoDriverManager().install()),
-            options=options,
-        )
+        # Selenium Manager resolves the driver binary automatically.
+        driver = webdriver.Firefox(options=options)
         return driver

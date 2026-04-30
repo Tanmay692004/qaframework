@@ -7,6 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 
+from utils.config import DEFAULT_WAIT_SECONDS
+
 
 class InventoryPage:
     """Page Object Model for SauceDemo Inventory Page"""
@@ -20,7 +22,7 @@ class InventoryPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
 
     def get_all_products(self):
         """Return list of product dicts: {name, price, element}"""

@@ -6,9 +6,14 @@ Handles driver setup, teardown, and screenshot on failure
 import os
 import pytest
 from datetime import datetime
-from selenium.webdriver.chrome.webdriver import WebDriver
 from utils.driver_factory import DriverFactory
 from utils.logger import Logger
+from utils.config import REPORTS_DIR, SCREENSHOTS_DIR, DEFAULT_WAIT_SECONDS
+
+try:
+    import pytest_html
+except Exception:  # pragma: no cover - available in normal test runs
+    pytest_html = None
 
 
 # Initialize logger
@@ -39,7 +44,7 @@ def driver(browser, request):
     # Create driver using DriverFactory
     driver = DriverFactory.create_driver(browser_name=browser, headless=headless)
     driver.maximize_window()
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(DEFAULT_WAIT_SECONDS)
 
     yield driver
 
@@ -87,16 +92,20 @@ def pytest_runtest_makereport(item, call):
             driver = item.funcargs.get("driver")
             if driver:
                 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-                screenshot_dir = "screenshots"
+                os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
-                # Create screenshots directory if it doesn't exist
-                if not os.path.exists(screenshot_dir):
-                    os.makedirs(screenshot_dir)
-
-                screenshot_name = (
-                    f"{screenshot_dir}/{item.name}_{timestamp}.png"
-                )
+                screenshot_name = SCREENSHOTS_DIR / f"{item.name}_{timestamp}.png"
                 driver.save_screenshot(screenshot_name)
                 logger.error(
                     f"Test failed: {item.name}. Screenshot saved: {screenshot_name}"
                 )
+
+                if pytest_html is not None:
+                    extra = getattr(report, "extra", [])
+                    try:
+                        with open(screenshot_name, "rb") as image_file:
+                            encoded = image_file.read()
+                        extra.append(pytest_html.extras.png(encoded, name="screenshot"))
+                        report.extra = extra
+                    except Exception:
+                        logger.warning("Could not attach screenshot to HTML report for %s", item.name)

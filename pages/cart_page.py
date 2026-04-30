@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from utils.config import DEFAULT_WAIT_SECONDS
+
 
 class CartPage:
     CART_ITEM = (By.CLASS_NAME, "cart_item")
@@ -14,7 +16,7 @@ class CartPage:
 
     def __init__(self, driver):
         self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
+        self.wait = WebDriverWait(driver, DEFAULT_WAIT_SECONDS)
 
     def get_cart_items(self):
         """Return list of product names present in the cart"""
