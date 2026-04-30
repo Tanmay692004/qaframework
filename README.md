@@ -1,3 +1,4 @@
+![CI](https://github.com/tanmay692004/qaframework/actions/workflows/ci.yml/badge.svg)
 # QA Automation Framework - SauceDemo
 
 **Production-grade Python UI automation framework** demonstrating enterprise-level test architecture, parallel execution, cross-browser coverage, and robust DevOps integration.
