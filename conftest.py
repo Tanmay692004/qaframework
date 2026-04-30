@@ -1,11 +1,10 @@
-"""
-conftest.py - Pytest configuration and shared fixtures
-Handles driver setup, teardown, and screenshot on failure
-"""
+"""Pytest configuration, shared fixtures, and failure diagnostics."""
 
-import os
-import pytest
+import base64
+import re
 from datetime import datetime
+
+import pytest
 from utils.driver_factory import DriverFactory
 from utils.logger import Logger
 from utils.config import REPORTS_DIR, SCREENSHOTS_DIR, DEFAULT_WAIT_SECONDS
@@ -18,6 +17,19 @@ except Exception:  # pragma: no cover - available in normal test runs
 
 # Initialize logger
 logger = Logger.setup_logger(__name__)
+
+
+def _sanitize_nodeid(nodeid: str) -> str:
+    """Convert a pytest nodeid into a filename-safe slug."""
+    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", nodeid)
+    return cleaned.strip("_")
+
+
+def _build_screenshot_path(item, browser: str) -> str:
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:-3]
+    filename = f"{_sanitize_nodeid(item.nodeid)}__{browser}__{timestamp}.png"
+    SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
+    return str(SCREENSHOTS_DIR / filename)
 
 
 @pytest.fixture(scope="function")
@@ -84,6 +96,16 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "checkout: Checkout tests")
     config.addinivalue_line("markers", "smoke: Smoke tests")
 
+    metadata = getattr(config, "_metadata", None)
+    if metadata is not None:
+        metadata["Project"] = "QA Framework"
+        metadata["Reports"] = str(REPORTS_DIR)
+        metadata["Screenshots"] = str(SCREENSHOTS_DIR)
+
+
+def pytest_html_report_title(report):
+    report.title = "SauceDemo QA Automation Report"
+
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -99,21 +121,33 @@ def pytest_runtest_makereport(item, call):
         if "driver" in item.fixturenames:
             driver = item.funcargs.get("driver")
             if driver:
-                timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S_%f")[:-3]
-                os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
-
-                screenshot_name = SCREENSHOTS_DIR / f"{item.name}_{timestamp}.png"
+                browser = item.funcargs.get("browser", "chrome")
+                screenshot_name = _build_screenshot_path(item, browser)
                 driver.save_screenshot(screenshot_name)
                 logger.error(
-                    f"Test failed: {item.name}. Screenshot saved: {screenshot_name}"
+                    "Test failed: %s. Screenshot saved: %s",
+                    item.nodeid,
+                    screenshot_name,
                 )
 
                 if pytest_html is not None:
                     extra = getattr(report, "extra", [])
                     try:
                         with open(screenshot_name, "rb") as image_file:
-                            encoded = image_file.read()
-                        extra.append(pytest_html.extras.png(encoded, name="screenshot"))
+                            encoded = base64.b64encode(image_file.read()).decode("utf-8")
+
+                        extra.append(
+                            pytest_html.extras.html(
+                                f'<div><p><strong>Failure screenshot:</strong></p>'
+                                f'<img src="data:image/png;base64,{encoded}" '
+                                f'alt="failure screenshot" '
+                                f'style="max-width: 100%; border: 1px solid #d0d7de;" />'
+                                f"</div>"
+                            )
+                        )
                         report.extra = extra
                     except Exception:
-                        logger.warning("Could not attach screenshot to HTML report for %s", item.name)
+                        logger.warning(
+                            "Could not attach screenshot to HTML report for %s",
+                            item.nodeid,
+                        )

@@ -136,6 +136,16 @@ pytest --browser=chrome
 pytest --html=reports/report.html --self-contained-html
 ```
 
+### Generate a Recruiter-Friendly Report
+
+```bash
+pytest tests/test_login.py tests/test_products.py tests/test_checkout.py \
+   -n auto --browser=firefox \
+   --html=reports/report.html --self-contained-html
+```
+
+Use this run when you want a polished evidence set for interviews: the HTML report includes failure screenshots, and the `screenshots/` folder stores the raw PNGs.
+
 ### Run Full Suite in Parallel with HTML Report
 
 ```bash
@@ -262,6 +272,30 @@ pytest --tb=short
 pytest --html=reports/report.html --self-contained-html
 # Open reports/report.html in browser
 ```
+
+### Add Report Screenshots to README
+
+After one successful execution, capture two artifacts and add them under a new section in this README:
+
+1. A terminal screenshot showing a clean test run, for example a full `pytest` or `pytest -n auto` execution.
+2. An HTML report screenshot showing the summary and the embedded failure screenshot panel.
+
+Recommended file names:
+
+- `docs/images/test-execution.png`
+- `docs/images/html-report.png`
+
+Then paste the following Markdown block into the README once the images exist:
+
+```markdown
+## Execution Evidence
+
+![Test Execution](docs/images/test-execution.png)
+
+![HTML Report](docs/images/html-report.png)
+```
+
+This keeps the README recruiter-focused: it proves the framework runs, reports clearly, and captures failures without requiring anyone to inspect raw logs first.
 
 ---
 
