@@ -10,6 +10,7 @@ jobs:
   test:
     name: Test on ${{ matrix.browser }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -21,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -44,12 +45,11 @@ jobs:
           mkdir -p screenshots
 
       - name: Run tests (browser=${{ matrix.browser }})
-        env:
-          BROWSER: ${{ matrix.browser }}
         run: |
-          pytest -n auto -q --browser=${{ matrix.browser }} --html=reports/report-${{ matrix.browser }}.html --self-contained-html --junitxml=reports/junit-${{ matrix.browser }}.xml
+          python -m pytest -n 2 -q --browser=${{ matrix.browser }} --html=reports/report-${{ matrix.browser }}.html --self-contained-html --junitxml=reports/junit-${{ matrix.browser }}.xml
 
       - name: Upload reports and screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pytest-artifacts-${{ matrix.browser }}
