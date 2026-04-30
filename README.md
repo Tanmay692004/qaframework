@@ -1,291 +1,48 @@
 # QA Automation Framework - SauceDemo
 
-A production-quality **Python Selenium Pytest Framework** for test automation, built with industry best practices and the **Page Object Model (POM)** architecture.
-
-## 🎯 Project Overview
-
-**Target Website:** https://www.saucedemo.com  
-**Framework:** Python + Selenium + Pytest  
-**Architecture:** Page Object Model (POM)  
-**Goal:** Comprehensive automation testing framework suitable for job interviews and production use
-
----
-
-## 📋 Features
-
-- ✅ **Page Object Model** - Clean, maintainable, scalable test structure
-- ✅ **Base Page Abstraction** - Shared Selenium helpers for reusable page logic
-- ✅ **Cross-Browser Support** - Chrome and Firefox
-- ✅ **Selenium Manager Driver Resolution** - No manual driver downloads or GitHub API dependency
-- ✅ **Screenshot on Failure** - Automatic captures for debugging
-- ✅ **Screenshot Attachment in HTML Reports** - Failure evidence embedded in pytest-html output
-- ✅ **HTML Test Reports** - pytest-html integration
-- ✅ **Data-Driven Testing** - Parameterized tests with CSV/JSON
-- ✅ **Parallel Execution** - pytest-xdist support
-- ✅ **Robust Logging** - Custom logger for test execution
-- ✅ **Modular Architecture** - Separation of concerns (tests, pages, utils)
-- ✅ **22 Meaningful Tests** - Login, product/cart, and checkout coverage
-
----
-
-## 🚀 Quick Start
-
-### Step 1: Create and Activate Virtual Environment
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate venv (Windows)
-venv\Scripts\activate
-
-# Activate venv (Mac/Linux)
-source venv/bin/activate
-```
-
-### Step 2: Install Dependencies
-
-```bash
-# Upgrade pip
-python -m pip install --upgrade pip
-
-# Install all required packages
-pip install -r requirements.txt
-```
-
-### Step 3: Verify Installation
-
-```bash
-# List installed packages
-pip list
-
-# Run a single test to verify setup
-pytest tests/test_login.py::TestLogin::test_valid_login -v
-```
-
----
-
-## 📁 Project Structure
-
-```
-qaframework/
-├── venv/                      # Virtual environment (ignored in git)
-├── tests/                     # Test files
-│   ├── __init__.py
-│   └── test_login.py         # Login test cases
-├── pages/                     # Page Object Model classes
-│   ├── __init__.py
-│   ├── base_page.py          # Shared page helpers
-│   └── login_page.py         # Login page POM
-├── utils/                     # Utility functions
-│   ├── __init__.py
-│   ├── config.py             # Central framework settings
-│   ├── driver_factory.py      # WebDriver creation
-│   └── logger.py              # Custom logging
-├── test_data/                 # JSON/CSV data files
-├── screenshots/               # Failure screenshots (generated)
-├── reports/                   # HTML reports (generated)
-├── conftest.py               # Pytest fixtures and hooks
-├── pytest.ini                # Pytest configuration
-├── requirements.txt          # Python dependencies
-├── .gitignore               # Git ignore rules
-└── README.md                # This file
-```
-
----
-
-## 🧪 Running Tests
-
-### Run All Tests
-
-```bash
-pytest
-```
-
-### Run Specific Test File
-
-```bash
-pytest tests/test_login.py -v
-```
-
-### Run Specific Test Class
-
-```bash
-pytest tests/test_login.py::TestLogin -v
-```
-
-### Run Specific Test Case
-
-```bash
-pytest tests/test_login.py::TestLogin::test_valid_login -v
-```
-
-### Run Tests with Custom Browser
-
-```bash
-# Run on Firefox
-pytest --browser=firefox
-
-# Run on Chrome (default)
-pytest --browser=chrome
-```
-
-### Run Tests with HTML Report
-
-```bash
-pytest --html=reports/report.html --self-contained-html
-```
-
-### Generate a Recruiter-Friendly Report
-
-```bash
-pytest tests/test_login.py tests/test_products.py tests/test_checkout.py \
-   -n auto --browser=firefox \
-   --html=reports/report.html --self-contained-html
-```
-
-Use this run when you want a polished evidence set for interviews: the HTML report includes failure screenshots, and the `screenshots/` folder stores the raw PNGs.
-
-### Run Full Suite in Parallel with HTML Report
-
-```bash
-pytest tests/test_login.py tests/test_products.py tests/test_checkout.py -n auto --browser=firefox --html=reports/report.html --self-contained-html
-```
-
-### Run Tests in Parallel
-
-```bash
-pytest -n 4  # Run with 4 workers
-```
-
-### Run Only Smoke Tests
-
-```bash
-pytest -m smoke
-```
-
----
-
-## ✅ Step 1 - Completed (Current)
-
-**What's Implemented:**
-
-1. **Virtual Environment Setup**
-   - Created isolated Python environment with venv
-   - Installed all required dependencies
-   - Created `requirements.txt` with pinned versions
-
-2. **Project Structure**
-   - Scaffolded `tests/`, `pages/`, `utils/`, `reports/`, `screenshots/` folders
-   - Added `__init__.py` in all packages
-
-3. **Core Utilities**
-   - **`driver_factory.py`** - WebDriver factory for Chrome and Firefox creation
-   - **`logger.py`** - Custom logger for test execution
-   - **`conftest.py`** - Pytest fixtures for driver management and screenshot on failure
-
-4. **Page Object Model**
-   - **`login_page.py`** - Complete LoginPage POM with all methods:
-     - `load()` - Navigate to login page
-     - `enter_username()` / `enter_password()` - Input credentials
-     - `login()` - Complete login flow
-     - `get_error_message()` - Capture errors
-     - `is_login_successful()` - Verify successful login
-
-5. **Test Cases**
-   - ✅ `test_valid_login` - Valid credentials login
-   - ✅ `test_negative_login_scenarios` - JSON-driven invalid, locked, and empty credential cases
-   - ✅ Product/cart tests for add, remove, sort, and cart validation
-   - ✅ Checkout tests for happy path and validation errors
-
-   **Current test count:** 22 meaningful automated test cases
-
-6. **Configuration**
-   - `pytest.ini` - Pytest settings, markers, and addopts
-   - `.gitignore` - Proper ignore rules
-
----
-
-## 📚 Test Credentials (SauceDemo)
-
-**Valid Users:**
-- Username: `standard_user` | Password: `secret_sauce`
-- Username: `problem_user` | Password: `secret_sauce`
-- Username: `performance_glitch_user` | Password: `secret_sauce`
-
-**Invalid Users:**
-- Username: `locked_out_user` | Password: `secret_sauce` (Returns: locked account error)
-
----
-
-## 🏗️ Architecture Details
-
-### Page Object Model (POM)
-
-Each page has:
-- **Locators**: CSS/XPath selectors
-- **Constructor**: Receives WebDriver instance
-- **Methods**: User interactions (login, click, fill)
-- **Assertions**: Page element verification
-
-Example:
-```python
-login_page = LoginPage(driver)
-login_page.load()
-login_page.login("username", "password")
-assert login_page.is_login_successful()
-```
-
-### Pytest Fixtures
-
-- **`driver`** - Scope: `function` - Fresh driver per test, auto teardown
-- **`browser`** - Browser type selection via CLI
-
-### Custom Hooks
-
-- **`pytest_runtest_makereport`** - Captures screenshot on failure
-- **`pytest_addoption`** - Adds `--browser` command line option
-
----
-
-## 🔍 Debugging
-
-### View Test Logs
-
-```bash
-# Run with full output
-pytest -v -s
-
-# Run with short traceback
-pytest --tb=short
-```
-
-### Check Screenshots
-
-- Failed test screenshots saved in `screenshots/` folder
-- Named as: `test_name_YYYY-MM-DD_HH-MM-SS_ms.png`
-
-### View Latest HTML Report
-
-```bash
-# Generate and view report
-pytest --html=reports/report.html --self-contained-html
-# Open reports/report.html in browser
-```
-
-### Add Report Screenshots to README
-
-After one successful execution, capture two artifacts and add them under a new section in this README:
-
-1. A terminal screenshot showing a clean test run, for example a full `pytest` or `pytest -n auto` execution.
-2. An HTML report screenshot showing the summary and the embedded failure screenshot panel.
-
-Recommended file names:
+Interview-ready Python UI automation framework for SauceDemo, built with Selenium, Pytest, Page Object Model, data-driven tests, failure evidence, and parallel/browser-flexible execution.
+
+## Project Snapshot
+
+- Target app: SauceDemo
+- Stack: Python 3.12, Selenium 4, Pytest, pytest-html, pytest-xdist
+- Architecture: Page Object Model with a shared base page abstraction
+- Driver strategy: Selenium Manager, no manual driver downloads
+- Quality goals: maintainable tests, readable reports, and clean execution evidence for interviews
+
+## Why this stands out
+
+- Login coverage is data-driven from external JSON with valid, invalid, and edge cases.
+- Failure screenshots are captured only on failures and attached to HTML reports.
+- Chrome and Firefox are selectable from a single CLI option.
+- Parallel execution is enabled without shared-state collisions by using function-scoped drivers.
+- The suite is organized like real client work, not a demo script.
+
+## Features
+
+- Page Object Model for maintainable UI automation
+- Base page abstraction to remove duplicate Selenium helpers
+- Data-driven login coverage with JSON test data
+- Screenshot-on-failure hook via `pytest_runtest_makereport`
+- pytest-html integration with report title and metadata
+- Cross-browser execution with `--browser=chrome|firefox`
+- Parallel execution with pytest-xdist
+- Centralized config and driver factory for cleaner abstractions
+- Structured logging for test lifecycle visibility
+- CI-ready layout for GitHub Actions
+
+## Evidence Included
+
+- Failure screenshots are stored in `screenshots/`
+- HTML reports are generated in `reports/`
+- README supports embedding execution and report screenshots for recruiter review
+
+Recommended screenshot files for the README:
 
 - `docs/images/test-execution.png`
 - `docs/images/html-report.png`
 
-Then paste the following Markdown block into the README once the images exist:
+Example Markdown to paste once those images exist:
 
 ```markdown
 ## Execution Evidence
@@ -295,50 +52,142 @@ Then paste the following Markdown block into the README once the images exist:
 ![HTML Report](docs/images/html-report.png)
 ```
 
-This keeps the README recruiter-focused: it proves the framework runs, reports clearly, and captures failures without requiring anyone to inspect raw logs first.
+## Setup
 
----
+### 1. Create a virtual environment
 
-## 📝 Next Steps (Upcoming)
+```bash
+python -m venv venv
+```
 
-- **Step 2:** Cross-browser testing improvements and additional POM pages
-- **Step 3:** Data-driven testing with CSV/JSON
-- **Step 4:** Inventory and Product tests
-- **Step 5:** Cart functionality tests
-- **Step 6:** Complete checkout flow tests
-- **Step 7:** CI/CD integration with GitHub Actions
+### 2. Activate it
 
----
+Windows:
 
-## 📖 Best Practices Implemented
+```bash
+venv\Scripts\activate
+```
 
-1. ✅ **DRY (Don't Repeat Yourself)** - Driver factory and fixtures
-2. ✅ **Single Responsibility** - Separate classes for pages and utils
-3. ✅ **Explicit Waits** - WebDriverWait with expected conditions
-4. ✅ **Proper Logging** - Detailed logs for debugging
-5. ✅ **Error Handling** - Try-catch for robustness
-6. ✅ **Clean Code** - Type hints, docstrings, comments
-7. ✅ **Test Independence** - No test dependencies, isolated fixtures
+macOS/Linux:
 
----
+```bash
+source venv/bin/activate
+```
 
-## 🛠️ Troubleshooting
+### 3. Install dependencies
 
-**Problem:** `ModuleNotFoundError: No module named 'selenium'`
-- Solution: Activate venv and run `pip install -r requirements.txt`
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-**Problem:** Tests not finding elements
-- Solution: Check if `wait()` time needs increase in conftest.py
+## Execution Commands
 
-**Problem:** Chrome/Firefox driver not found
-- Solution: webdriver-manager auto-downloads drivers (requires internet)
+### Login suite
 
----
+```bash
+pytest tests/test_login.py -q
+```
 
-## 📞 Contact & Support
+### Full suite
 
-For questions or improvements, refer to the test documentation and comments in the code.
+```bash
+pytest
+```
 
----
+### Cross-browser execution
 
-**Let's build a production-quality framework! 🚀**
+```bash
+pytest --browser=chrome
+pytest --browser=firefox
+```
+
+### Parallel execution
+
+```bash
+pytest -n auto
+```
+
+### HTML report generation
+
+```bash
+pytest tests/test_login.py tests/test_products.py tests/test_checkout.py --html=reports/report.html --self-contained-html
+```
+
+### Parallel plus HTML report
+
+```bash
+pytest tests/test_login.py tests/test_products.py tests/test_checkout.py -n auto --browser=firefox --html=reports/report.html --self-contained-html
+```
+
+## Reporting Behavior
+
+- Reports use pytest-html with a custom title: SauceDemo QA Automation Report
+- Metadata includes project, reports path, and screenshots path
+- Failure screenshots are embedded inside the report as inline images
+- Raw PNG evidence is also preserved in `screenshots/`
+
+## Test Design
+
+### Data-driven login coverage
+
+Login tests are parameterized from `test_data/login_users.json`.
+
+Included scenarios:
+
+- valid users
+- invalid users
+- edge cases such as empty inputs, long inputs, and injection-like input strings
+
+This matters in interviews because it shows the suite is built for scale, not hardcoded around one happy path.
+
+### Pytest fixtures and hooks
+
+- `driver` creates a fresh browser per test and avoids cross-test contamination
+- `browser` reads the CLI browser choice
+- `pytest_runtest_makereport` captures screenshots only on failure
+- `pytest_addoption` adds browser/headed control without changing code
+
+### Driver strategy
+
+`utils/driver_factory.py` centralizes browser creation.
+
+- Chrome and Firefox are both supported
+- Selenium Manager resolves drivers automatically
+- Headless runs are enabled by default for CI friendliness
+- Browser switching is clean and isolated to the fixture layer
+
+## Repository Layout
+
+```text
+qaframework/
+├── conftest.py
+├── pages/
+├── reports/
+├── screenshots/
+├── test_data/
+├── tests/
+├── utils/
+├── pytest.ini
+├── requirements.txt
+└── README.md
+```
+
+## Current Coverage
+
+- Login flows: data-driven success and failure cases
+- Product/cart flows: add, remove, sort, and cart assertions
+- Checkout flows: happy path plus validation coverage
+
+## Interview Talking Points
+
+- The framework is structured for maintainability, not just execution.
+- Report evidence is attached automatically, which makes defects easier to triage.
+- Parallel execution works because each test has its own driver instance.
+- The browser is configurable without code changes, which is useful in CI and local debugging.
+- JSON-driven test data shows separation of concerns between scenario design and test logic.
+
+## Notes
+
+- If you want the README to look even stronger, add real screenshots from the latest report run using the paths above.
+- If a failure occurs, check `screenshots/` first, then open the HTML report in `reports/`.
